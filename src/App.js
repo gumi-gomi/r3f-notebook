@@ -1,15 +1,26 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, useTexture } from '@react-three/drei';
+import { Html, OrbitControls, useGLTF, useTexture } from '@react-three/drei';
 import * as THREE from "three"
 import styled from 'styled-components';
 
 const Background = styled.div`
 width: 100vw;
 height: 100vh;
-/* background-color: black; */
+background-color: black;
 `
+const Section = styled.section`
+  position: fixed;
+  outline: 1px dotted red;
+  z-index: 0;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 1000px;
+  height: 700px;
+  perspective: 3000px;
+`;
 
 /* ---------------- 맥북 */
 const MacBook = () => {
@@ -21,7 +32,11 @@ const MacBook = () => {
 
   const MacBookScreen = () => {
     const { scene } = useGLTF(process.env.PUBLIC_URL + '/appletop.glb'); // 내보낸 모델 경로
-    return <primitive object={scene} scale={[0.5, 0.5, 0.5]} />;
+    return (
+      <>
+        <primitive object={scene} scale={[0.5, 0.5, 0.5]} />
+      </>
+    )
   };
   const MacBookBottom = () => {
     const { scene } = useGLTF(process.env.PUBLIC_URL + '/btm.glb'); // 내보낸 모델 경로
@@ -50,7 +65,7 @@ const MacBook = () => {
         <boxGeometry args={[3, 0.1, 2]} />
         <meshStandardMaterial color="gray" />
       </mesh> */}
-      <group position={[0, -1.09,0]} castShadow>  
+      <group position={[0, -1.1,0]} castShadow>  
       <MacBookBottom/>
       </group>
 
@@ -63,6 +78,53 @@ const MacBook = () => {
         </meshStandardMaterial>
       </mesh> */}
       <MacBookScreen/>
+
+      {/* ---------- open 글씨 */}
+      {!isOpen && (
+      <Html
+        position={[0, 1, 1]} // 텍스트 위치 (적절히 조정)
+        transform
+        distanceFactor={1.5} // 크기 조절
+        style={{
+          // outline:'1px dotted red',
+          fontSize:'120px',
+          color: 'white',
+          // background: 'rgba(0, 0, 0, 0.5)',
+          // padding: '8px 12px',
+          // borderRadius: '8px',
+          textAlign: 'center',
+          cursor: 'pointer',
+        }}
+      >
+        <div>Open</div>
+      </Html>
+    )}
+
+             {/* iframe */}
+             {isOpen && ( // 열림 상태일 때만 iframe 렌더링
+          <Html
+            position={[0, 0, 1]} // iframe 위치
+            rotation={[-29.84, 0, 0]} // iframe 각도 (화면 기울기)
+            transform
+            distanceFactor={1.5}
+            style={{
+              width: '780px',
+              height: '510px',
+              border: '2px solid rgba(0,0,0,0.5)',
+              borderRadius: '15px',
+              overflow: 'hidden',
+            }}
+          >
+            <iframe
+              src="https://gumi-gomi.github.io/kmong_pj/build/" // 표시하고자 하는 URL
+              title="MacBook Screen"
+              width="100%"
+              height="100%"
+              style={{ border: 'none' }}
+            />
+          </Html>
+        )}
+
       </group>
     </group>
   );
@@ -160,7 +222,7 @@ function App() {
 <Background>
 <Canvas 
     shadows 
-    style={{ width: "100vw", height: "100vh" }}
+    style={{ width: "100vw", height: "100vh", zIndex:'10' }}
     camera={{position: [0,10,10], fov:16}}
     >
       {/* -------------------바닥 */}
@@ -184,12 +246,17 @@ function App() {
           minAzimuthAngle={-Math.PI / 6}
           maxAzimuthAngle={Math.PI / 6}
           enablePan={false}
-          enableZoom={false}
+          // enableZoom={false}
+          minDistance={12} // 줌 최소 거리
+          maxDistance={14} // 줌 최대 거리
         />
         <ambientLight intensity={0.5} />
-        <directionalLight position={[5, 5, 5]} intensity={0.8} castShadow />
+        <directionalLight position={[5, 3, 1]} intensity={0.7} castShadow />
         <MacBook />
     </Canvas>
+    <Section>
+      <h1 style={{color:"white"}}>hello</h1>
+    </Section>
          </Background>
    </>
   );
