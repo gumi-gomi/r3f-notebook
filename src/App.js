@@ -311,6 +311,10 @@ function App() {
        <RotatingCube />
     </Canvas> */}
 <Canvas 
+  gl={{ 
+    antialias: false,  
+    powerPreference: "high-performance" 
+  }}
     shadows 
     style={{ width: "100vw", height: "100vh", zIndex:'10' }}
     camera={{position: [-3,2,10], fov:16}}
