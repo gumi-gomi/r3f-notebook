@@ -3,23 +3,73 @@ import './App.css';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Html, OrbitControls, useGLTF, useTexture } from '@react-three/drei';
 import * as THREE from "three"
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+import Bgimg from "./img/bgimg.png"
+import Clickimg from "./img/clickimg.png"
 
-const Background = styled.div`
-width: 100vw;
-height: 100vh;
-background-color: black;
-`
-const Section = styled.section`
-  position: fixed;
-  outline: 1px dotted red;
-  z-index: 0;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 1000px;
-  height: 700px;
-  perspective: 3000px;
+const BackgroundImage = () => {
+  const texture = useTexture(Bgimg);
+
+  return (
+    <mesh 
+      position={[0, 0.5, -2.8]} 
+      name="BackgroundImage"
+      receiveShadow
+      onPointerDown={(e) => e.stopPropagation()} // 이벤트 중지
+      onPointerUp={(e) => e.stopPropagation()}   // 이벤트 중지
+      >
+      <planeGeometry args={[4, 2.6]} />
+      <meshBasicMaterial
+        map={texture} // 텍스처를 설정
+        transparent={true} // 투명 배경 활성화
+        alphaTest={0}
+      />
+    </mesh>
+  );
+};
+const BackgroundText = () => {
+  return (
+    <Html
+    position={[0, 0, -2.3]} // 텍스트 위치 (적절히 조정)
+    transform
+    distanceFactor={4.6} // 크기 조절
+    style={{
+      // outline:'1px dotted red',
+      fontSize:'30px',
+      color: 'white',
+      width:'100vw',
+      zIndex:'-2',
+      height:'100vh',
+      fontWeight:'700'
+      // background: 'rgba(0, 0, 0, 0.5)',
+      // padding: '8px 12px',
+      // borderRadius: '8px',
+      // textAlign: 'center',
+      // cursor: 'pointer',
+    }}
+  >
+    <div> R3F-PROJECT</div>
+  </Html>
+  );
+};
+
+const floatAnimation = keyframes`
+  0% { transform: translateY(0); }
+  50% { transform: translateY(35px); }
+  100% { transform: translateY(0); }
+`;
+
+const AnimatedHtmlContainer = styled.div`
+  font-size: 90px;
+  color: white;
+  width: 540px;
+  height: 240px;
+  background-image: url(${(props) => props.bg});
+  background-size: cover;
+  text-align: center;
+  cursor: normal;
+
+  animation: ${floatAnimation} 3s infinite ease-in-out;
 `;
 
 /* ---------------- 맥북 */
@@ -65,12 +115,14 @@ const MacBook = () => {
         <boxGeometry args={[3, 0.1, 2]} />
         <meshStandardMaterial color="gray" />
       </mesh> */}
-      <group position={[0, -1.1,0]} castShadow>  
+      <group position={[0, -0.903,0]} castShadow>  
       <MacBookBottom/>
+      <BackgroundImage style={{ pointerEvents: "none" }} />
+  
       </group>
 
       {/* 맥북 화면 */}
-      <group ref={lidRef} position={[0, -1.05,-1]} castShadow>
+      <group ref={lidRef} position={[0, -0.85,-1]} castShadow>
      {/*  <mesh ref={lidRef} position={[0, 0.05, 1]} castShadow>
         <boxGeometry args={[3, 0.05, 2]} />
         <meshStandardMaterial color="royalblue">
@@ -82,21 +134,16 @@ const MacBook = () => {
       {/* ---------- open 글씨 */}
       {!isOpen && (
       <Html
-        position={[0, 1, 1]} // 텍스트 위치 (적절히 조정)
+        position={[0, 0.7, 0.5]} // 텍스트 위치 (적절히 조정)
         transform
         distanceFactor={1.5} // 크기 조절
         style={{
-          // outline:'1px dotted red',
-          fontSize:'120px',
-          color: 'white',
-          // background: 'rgba(0, 0, 0, 0.5)',
-          // padding: '8px 12px',
-          // borderRadius: '8px',
-          textAlign: 'center',
-          cursor: 'pointer',
+          cursor: 'normal',
         }}
       >
-        <div>Open</div>
+         <AnimatedHtmlContainer bg={Clickimg}>
+          <div></div>
+         </AnimatedHtmlContainer>
       </Html>
     )}
 
@@ -131,6 +178,51 @@ const MacBook = () => {
 };
 
 /* ---------------- 맥북끝 */
+
+// ----------------- 별효과
+
+const Stars = () => {
+  const pointsRef = useRef();
+  const particleCount = 200; // 별의 개수
+  const positions = new Float32Array(particleCount * 3); // x, y, z 값 저장 배열
+
+  // 별의 초기 위치 랜덤 설정
+  useEffect(() => {
+    for (let i = 0; i < particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 20; // x 좌표
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 10; // y 좌표
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 50; // z 좌표 (깊이)
+    }
+    if (pointsRef.current) {
+      pointsRef.current.geometry.setAttribute(
+        'position',
+        new THREE.BufferAttribute(positions, 3)
+      );
+    }
+  }, [positions]);
+
+  // z축 방향으로 이동
+  useFrame(() => {
+    for (let i = 0; i < particleCount; i++) {
+      positions[i * 3 + 2] += 0.02; // z축 이동
+      if (positions[i * 3 + 2] > 25) {
+        positions[i * 3 + 2] = -25; // 화면을 벗어나면 초기화
+      }
+    }
+    if (pointsRef.current) {
+      pointsRef.current.geometry.attributes.position.needsUpdate = true; // 업데이트 적용
+    }
+  });
+
+  return (
+    <points ref={pointsRef}>
+      <bufferGeometry />
+      <pointsMaterial size={0.04} color="white" />
+    </points>
+  );
+};
+
+// ----------------- 별효과 끝
 
 const Block = () => {
   const meshRef = useRef();
@@ -218,12 +310,10 @@ function App() {
         <OrbitControls/>
        <RotatingCube />
     </Canvas> */}
-
-<Background>
 <Canvas 
     shadows 
     style={{ width: "100vw", height: "100vh", zIndex:'10' }}
-    camera={{position: [0,10,10], fov:16}}
+    camera={{position: [-3,2,10], fov:16}}
     >
       {/* -------------------바닥 */}
     {/*   <OrbitControls 
@@ -247,17 +337,30 @@ function App() {
           maxAzimuthAngle={Math.PI / 6}
           enablePan={false}
           // enableZoom={false}
-          minDistance={12} // 줌 최소 거리
-          maxDistance={14} // 줌 최대 거리
+          minDistance={11} // 줌 최소 거리
+          maxDistance={13} // 줌 최대 거리
         />
         <ambientLight intensity={0.5} />
         <directionalLight position={[5, 3, 1]} intensity={0.7} castShadow />
         <MacBook />
     </Canvas>
-    <Section>
-      <h1 style={{color:"white"}}>hello</h1>
-    </Section>
-         </Background>
+
+     <Canvas 
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          zIndex: -1,
+          background: 'black',
+        }}
+     >
+      <ambientLight intensity={0.5} />
+      <BackgroundText/>
+      <Stars />
+    </Canvas>
+     
    </>
   );
 }
