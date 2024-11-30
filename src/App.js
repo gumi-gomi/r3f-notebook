@@ -89,7 +89,9 @@ const MacBook = () => {
   const speed = 0.1; // 애니메이션 속도
 
   const MacBookScreen = () => {
-    const { scene } = useGLTF(process.env.PUBLIC_URL + '/appletop.glb'); // 내보낸 모델 경로
+    const { scene } = useGLTF(
+      process.env.PUBLIC_URL + '/appletop.glb'
+    ); // 내보낸 모델 경로
     return (
       <>
         <primitive object={scene} scale={[0.5, 0.5, 0.5]} />
@@ -268,10 +270,10 @@ function App() {
   return (
    <>
 <Canvas 
-/*   gl={{ 
+  gl={{ 
     antialias: true,  
-    powerPreference: "high-performance" 
-  }} */
+    powerPreference: "default" 
+  }}
     shadows 
     style={{ width: "100vw", height: "100vh", zIndex:'10' }}
     // camera={{position: [-3,2,10], fov:16}}
@@ -298,6 +300,10 @@ function App() {
     </Canvas>
 
      <Canvas 
+     gl={{ 
+      antialias: true,  
+      powerPreference: "default" 
+    }}
         style={{
           position: 'absolute',
           top: 0,
