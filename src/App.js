@@ -89,7 +89,7 @@ const MacBook = () => {
   const speed = 0.1; // 애니메이션 속도
 
   const MacBookScreen = () => {
-    const { scene } = useGLTF(process.env.PUBLIC_URL + '/appletop.glb'); // 내보낸 모델 경로
+    const { scene } = useGLTF('/appletop.glb'); // 내보낸 모델 경로
     return (
       <>
         <primitive object={scene} scale={[0.5, 0.5, 0.5]} />
@@ -97,7 +97,7 @@ const MacBook = () => {
     )
   };
   const MacBookBottom = () => {
-    const { scene } = useGLTF(process.env.PUBLIC_URL + '/btm.glb'); // 내보낸 모델 경로
+    const { scene } = useGLTF('/btm.glb'); // 내보낸 모델 경로
     return <primitive object={scene} scale={[0.5, 0.5, 0.5]} />;
   };
 
