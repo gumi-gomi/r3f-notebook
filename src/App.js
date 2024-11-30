@@ -7,6 +7,7 @@ import styled, { keyframes } from 'styled-components';
 import Bgimg from "./img/bgimg.png"
 import Clickimg from "./img/clickimg.png"
 
+
 const BackgroundImage = () => {
   const texture = useTexture(Bgimg);
 
@@ -70,6 +71,12 @@ const AnimatedHtmlContainer = styled.div`
   cursor: normal;
 
   animation: ${floatAnimation} 3s infinite ease-in-out;
+  @media screen and (max-width: 768px) {
+    width: 300px;
+    height: 150px;
+    font-size: 6vw;
+  }
+
 `;
 
 /* ---------------- 맥북 */
@@ -160,6 +167,7 @@ const MacBook = () => {
               border: '2px solid rgba(0,0,0,0.5)',
               borderRadius: '15px',
               overflow: 'hidden',
+              opacity:'1',
             }}
           >
             <iframe
@@ -223,116 +231,55 @@ const Stars = () => {
 };
 
 // ----------------- 별효과 끝
+const useWindowSize = () => {
+  const [size, setSize] = useState([window.innerWidth, window.innerHeight]);
 
-const Block = () => {
-  const meshRef = useRef();
-  const [position, setPosition] = useState([0, 0.5, 0]); // 블록 초기 위치
-  const [rotation, setRotation] = useState(0); // 박스의 초기 회전 각도 (라디안)
-  const speed = 0.02; // 이동 속도
-  const keys = useRef({}); //눌린키를 추적
-  const rotationSpeed = Math.PI / 180; // 회전 속도
+  useEffect(() => {
+    const handleResize = () => setSize([window.innerWidth, window.innerHeight]);
 
-  // 방향키 이벤트 핸들러
-   // 키 입력 처리
-   useEffect(() => {
-    const handleKeyDown = (event) => {
-      keys.current[event.key] = true;
-    };
-
-    const handleKeyUp = (event) => {
-      keys.current[event.key] = false;
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // 매 프레임마다 움직임 업데이트
-  useFrame(() => {
-    let newPos = [...position];
-    let newRot = rotation;
-
-    // 방향키에 따라 이동 및 회전 처리
-    if (keys.current["ArrowUp"]) {
-      newPos[0] -= Math.sin(rotation) * speed;
-      newPos[2] -= Math.cos(rotation) * speed;
-    }
-    if (keys.current["ArrowDown"]) {
-      newPos[0] += Math.sin(rotation) * speed;
-      newPos[2] += Math.cos(rotation) * speed;
-    }
-    if (keys.current["ArrowLeft"]) {
-      newRot += rotationSpeed;
-    }
-    if (keys.current["ArrowRight"]) {
-      newRot -= rotationSpeed;
-    }
-
-    setPosition(newPos);
-    setRotation(newRot);
-
-    // 박스의 위치와 회전 업데이트
-    if (meshRef.current) {
-      meshRef.current.position.set(...newPos);
-      meshRef.current.rotation.y = newRot;
-    }
-  });
-
-
-  return (
-    <mesh ref={meshRef} position={position}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color="blue" />
-    </mesh>
-  );
-};
-
-const Plane = () => {
-  return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-      <planeGeometry args={[10, 6]} />
-      <meshStandardMaterial color="lightgray" />
-    </mesh>
-  );
+  return size; // [width, height]
 };
 
 
 function App() {
+
+  const [width, height] = useWindowSize();
+
+  // 화면 크기에 따라 fov 및 position 값 동적 계산
+  const calculateFov = () => Math.max(16, (height / width) * 20); // 기본값 16, 화면 비율에 따라 증가
+  const calculatePosition = () => {
+    if (width < 768) {
+      return [-3, 1.5, 8]; // 모바일 크기
+    } else if (width < 1024) {
+      return [-3, 2, 9]; // 태블릿 크기
+    } else {
+      return [-3, 2, 10]; // 데스크톱 크기
+    }
+  };
+
+  const cameraFov = calculateFov();
+  const cameraPosition = calculatePosition();
   
   return (
    <>
-    {/*   <Canvas style={{width:'100vw', height:'100vh'}}>
-        <OrbitControls/>
-       <RotatingCube />
-    </Canvas> */}
 <Canvas 
-  gl={{ 
-    antialias: false,  
+/*   gl={{ 
+    antialias: true,  
     powerPreference: "high-performance" 
-  }}
+  }} */
     shadows 
     style={{ width: "100vw", height: "100vh", zIndex:'10' }}
-    camera={{position: [-3,2,10], fov:16}}
+    // camera={{position: [-3,2,10], fov:16}}
+    camera={{
+      position: cameraPosition,
+      fov: cameraFov,
+    }}
     >
-      {/* -------------------바닥 */}
-    {/*   <OrbitControls 
-         minPolarAngle={Math.PI / 3.5} // 카메라가 수평에서 45도 아래로 내려가지 못하게 제한
-         maxPolarAngle={Math.PI / 2.6} // 수평(90도) 위로는 자유롭게 회전 가능
-         minAzimuthAngle={-Math.PI / 6} // 좌측으로 회전 가능한 최대 각도 (-45도)
-         maxAzimuthAngle={Math.PI / 6} // 우측으로 회전 가능한 최대 각도 (+45도)
-         enablePan={false} // 패닝 허용
-         enableZoom={false} // 줌 허용
-         />
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[5, 5, 5]} intensity={0.8} castShadow />
-      <Plane /> */}
-      {/* ----------------------- 바닥끝 */}
-      {/* <Block /> */}
+  
 
       <OrbitControls
           minPolarAngle={Math.PI / 3}
