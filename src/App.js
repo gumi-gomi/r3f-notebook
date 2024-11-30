@@ -89,7 +89,7 @@ const MacBook = () => {
   const speed = 0.1; // 애니메이션 속도
 
   const MacBookScreen = () => {
-    const { scene } = useGLTF('/appletop.glb'); // 내보낸 모델 경로
+    const { scene } = useGLTF(process.env.PUBLIC_URL + '/appletop.glb'); // 내보낸 모델 경로
     return (
       <>
         <primitive object={scene} scale={[0.5, 0.5, 0.5]} />
@@ -97,7 +97,7 @@ const MacBook = () => {
     )
   };
   const MacBookBottom = () => {
-    const { scene } = useGLTF('/btm.glb'); // 내보낸 모델 경로
+    const { scene } = useGLTF(process.env.PUBLIC_URL + '/btm.glb'); // 내보낸 모델 경로
     return <primitive object={scene} scale={[0.5, 0.5, 0.5]} />;
   };
 
@@ -247,14 +247,13 @@ const useWindowSize = () => {
 
 
 function App() {
-  const [webglSupported, setWebglSupported] = useState(true);
-  const [width, height] = useWindowSize();
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
+  const [width, height] = useWindowSize();
+
+  // 화면 크기에 따라 fov 및 position 값 동적 계산
+  const calculateFov = () => Math.max(16, (height / width) * 20); // 기본값 16, 화면 비율에 따라 증가
   const calculatePosition = () => {
-    if (isIOS) {
-      return [-3, 1.5, 9]; // iOS 기기용 카메라 위치 조정
-    } else if (width < 768) {
+    if (width < 768) {
       return [-3, 1.5, 8]; // 모바일 크기
     } else if (width < 1024) {
       return [-3, 2, 9]; // 태블릿 크기
@@ -263,44 +262,16 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    // WebGL 지원 체크
-    const canvas = document.createElement('canvas');
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    
-    if (!gl) {
-      setWebglSupported(false);
-    }
-  }, []);
-
-  if (!webglSupported) {
-    return <div>This device does not support WebGL</div>;
-  }
-
-  // 화면 크기에 따라 fov 및 position 값 동적 계산
-  const calculateFov = () => Math.max(16, (height / width) * 20); // 기본값 16, 화면 비율에 따라 증가
-/*   const calculatePosition = () => {
-    if (width < 768) {
-      return [-3, 1.5, 8]; // 모바일 크기
-    } else if (width < 1024) {
-      return [-3, 2, 9]; // 태블릿 크기
-    } else {
-      return [-3, 2, 10]; // 데스크톱 크기
-    }
-  }; */
-
   const cameraFov = calculateFov();
   const cameraPosition = calculatePosition();
   
   return (
    <>
 <Canvas 
-
-gl={{ 
-  antialias: true,  
-  powerPreference: "high-performance",
-  failIfMajorPerformanceCaveat: false // 성능 제한이 심한 경우에도 렌더링 시도
-}}
+/*   gl={{ 
+    antialias: true,  
+    powerPreference: "high-performance" 
+  }} */
     shadows 
     style={{ width: "100vw", height: "100vh", zIndex:'10' }}
     // camera={{position: [-3,2,10], fov:16}}
