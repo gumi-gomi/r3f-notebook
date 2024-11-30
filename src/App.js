@@ -72,8 +72,8 @@ const AnimatedHtmlContainer = styled.div`
 
   animation: ${floatAnimation} 3s infinite ease-in-out;
   @media screen and (max-width: 768px) {
-    width: 300px;
-    height: 150px;
+    width: 420px;
+    height: 270px;
     font-size: 6vw;
   }
 
