@@ -42,11 +42,6 @@ const BackgroundText = () => {
       zIndex:'-2',
       height:'100vh',
       fontWeight:'700'
-      // background: 'rgba(0, 0, 0, 0.5)',
-      // padding: '8px 12px',
-      // borderRadius: '8px',
-      // textAlign: 'center',
-      // cursor: 'pointer',
     }}
   >
     <div> R3F-PROJECT</div>
@@ -120,25 +115,13 @@ const MacBook = () => {
   return (
     <group onClick={handleClick}>
       {/* 맥북 바닥 */}
-
-      {/* <mesh position={[0, -1.1, 0]} receiveShadow>
-        <boxGeometry args={[3, 0.1, 2]} />
-        <meshStandardMaterial color="gray" />
-      </mesh> */}
       <group position={[0, -0.903,0]} castShadow>  
       <MacBookBottom/>
       <BackgroundImage style={{ pointerEvents: "none" }} />
-  
       </group>
 
       {/* 맥북 화면 */}
       <group ref={lidRef} position={[0, -0.85,-1]} castShadow>
-     {/*  <mesh ref={lidRef} position={[0, 0.05, 1]} castShadow>
-        <boxGeometry args={[3, 0.05, 2]} />
-        <meshStandardMaterial color="royalblue">
-          <meshStandardMaterial map={screenTexture} />
-        </meshStandardMaterial>
-      </mesh> */}
       <MacBookScreen/>
 
       {/* ---------- open 글씨 */}
@@ -157,8 +140,8 @@ const MacBook = () => {
       </Html>
     )}
 
-             {/* iframe */}
-             {isOpen && ( // 열림 상태일 때만 iframe 렌더링
+         {/* iframe */}
+         {isOpen && ( // 열림 상태일 때만 iframe 렌더링
           <Html
             position={[0, 0, 1]} // iframe 위치
             rotation={[-29.84, 0, 0]} // iframe 각도 (화면 기울기)
@@ -244,7 +227,7 @@ const useWindowSize = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  return size; // [width, height]
+  return size; 
 };
 
 
@@ -314,7 +297,7 @@ function App() {
           background: 'black',
         }}
      >
-      <ambientLight intensity={0.5} />
+      <ambientLight intensity={0.5}/>
       <BackgroundText/>
       <Stars />
     </Canvas>
