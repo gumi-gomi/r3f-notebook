@@ -157,7 +157,7 @@ const MacBook = () => {
             }}
           >
             <iframe
-              src="https://gumigomi-illust.com" // 표시하고자 하는 URL
+              src="https://gumi-gomi.github.io/kmong_pj/build/" // 표시하고자 하는 URL
               title="MacBook Screen"
               width="100%"
               height="100%"
@@ -299,7 +299,7 @@ function App() {
      >
       <ambientLight intensity={0.5}/>
       <BackgroundText/>
-      {/* <Stars /> */}
+      <Stars />
     </Canvas>
      
    </>
