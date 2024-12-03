@@ -85,7 +85,7 @@ const MacBook = () => {
 
   const MacBookScreen = () => {
     const { scene } = useGLTF(
-      '/appletop.glb'
+      './appletop.glb'
     ); // 내보낸 모델 경로
     return (
       <>
