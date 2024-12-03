@@ -131,7 +131,7 @@ const MacBook = () => {
         transform
         distanceFactor={1.5} // 크기 조절
         style={{
-          cursor: 'normal',
+        cursor: 'normal',
         }}
       >
          <AnimatedHtmlContainer bg={Clickimg}>
@@ -139,6 +139,23 @@ const MacBook = () => {
          </AnimatedHtmlContainer>
       </Html>
     )}
+   {/*  <Html
+        position={[0, 0.001, 1]} // iframe 위치
+        rotation={[-29.84, 0, 0]} // iframe 각도 (화면 기울기)
+        transform
+        distanceFactor={1.5}
+        style={{
+          width: '782px',
+          height: '512px',
+          border: '2px solid rgba(0,0,0,0.5)',
+          borderRadius: '15px',
+          overflow: 'hidden',
+          opacity:'1',
+          backgroundColor:'#9e9e9e'
+        }}
+      >
+          <div></div>
+      </Html> */}
 
          {/* iframe */}
          {isOpen && ( // 열림 상태일 때만 iframe 렌더링
@@ -157,14 +174,14 @@ const MacBook = () => {
             }}
           >
             <iframe
-              src="https://gumi-gomi.github.io/kmong_pj/build/" // 표시하고자 하는 URL
+              src="https://gumigomi-illust.com" // 표시하고자 하는 URL
               title="MacBook Screen"
               width="100%"
               height="100%"
               style={{ border: 'none' }}
             />
           </Html>
-        )}
+         )} 
 
       </group>
     </group>
