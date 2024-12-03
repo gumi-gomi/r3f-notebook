@@ -94,7 +94,7 @@ const MacBook = () => {
     )
   };
   const MacBookBottom = () => {
-    const { scene } = useGLTF(process.env.PUBLIC_URL + '/btm.glb'); // 내보낸 모델 경로
+    const { scene } = useGLTF('./btm.glb'); // 내보낸 모델 경로
     return <primitive object={scene} scale={[0.5, 0.5, 0.5]} />;
   };
 
