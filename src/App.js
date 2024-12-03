@@ -299,7 +299,7 @@ function App() {
      >
       <ambientLight intensity={0.5}/>
       <BackgroundText/>
-      <Stars />
+      {/* <Stars /> */}
     </Canvas>
      
    </>
