@@ -7,6 +7,14 @@ import styled, { keyframes } from 'styled-components';
 import Bgimg from "./img/bgimg.png"
 import Clickimg from "./img/clickimg.png"
 
+const Seconddiv = styled.div`
+outline: 1px dotted red;
+width: 100%;
+height: 700px;
+background-color: #000;
+
+`
+
 
 const BackgroundImage = () => {
   const texture = useTexture(Bgimg);
@@ -44,7 +52,7 @@ const BackgroundText = () => {
       fontWeight:'700'
     }}
   >
-    <div> R3F-PROJECT</div>
+    <div> UNIVERSE-DINO</div>
   </Html>
   );
 };
@@ -157,7 +165,7 @@ const MacBook = () => {
             }}
           >
             <iframe
-              src="https://gumi-gomi.github.io/kmong_pj/build/" // 표시하고자 하는 URL
+              src="https://chromedino.com/" // 표시하고자 하는 URL
               title="MacBook Screen"
               width="100%"
               height="100%"
@@ -302,6 +310,9 @@ function App() {
       <Stars />
     </Canvas>
      
+    {/*   <Seconddiv>
+
+      </Seconddiv> */}
    </>
   );
 }
